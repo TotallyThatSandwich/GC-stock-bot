@@ -8,6 +8,7 @@ load_dotenv()
 
 TOKEN = os.getenv("TOKEN") 
 DEV = os.getenv("DEV")
+DB = os.getenv("DB")
 
 LOGGING_CONFIG = {
     "version": 1,
