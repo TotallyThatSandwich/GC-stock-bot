@@ -2,6 +2,10 @@ from discord.ext import commands
 import discord
 import os
 import settings
+from core import start_scheduler, sync_users
+from db import init_db
+import asyncio
+
 
 logger = settings.logging.getLogger("bot")
 
@@ -16,6 +20,9 @@ async def is_admin(ctx):
 
 @bot.event
 async def on_ready():
+    await init_db()
+
+    await sync_users(bot)
     await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="Matthew Shower"))
 
     for cog_file in os.listdir('./cogs'):
@@ -29,6 +36,7 @@ async def on_ready():
         print(e)
 
     logger.info(f'Logged in as {bot.user} (ID: {bot.user.id})')
+    await start_scheduler()
 
 @bot.command()
 @commands.check(is_admin)
@@ -67,3 +75,5 @@ async def unload(ctx, cog: str):
         await ctx.send(f"no cog exists named {cog}")
 
 bot.run(settings.TOKEN, root_logger=True)
+
+asyncio.run(main())
