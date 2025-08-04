@@ -1,3 +1,23 @@
-WARNING    - 2025-08-04 17:02:36,359 - client          : PyNaCl is not installed, voice will NOT be supported
-INFO       - 2025-08-04 17:02:36,363 - client          : logging in using static token
-INFO       - 2025-08-04 17:02:37,797 - gateway         : Shard ID None has connected to Gateway (Session ID: d75e13c1eaaf2c1cd5052ace50faa09e).
+WARNING    - 2025-08-04 18:59:24,359 - client          : PyNaCl is not installed, voice will NOT be supported
+INFO       - 2025-08-04 18:59:24,364 - client          : logging in using static token
+INFO       - 2025-08-04 18:59:30,050 - gateway         : Shard ID None has connected to Gateway (Session ID: 7c00ed46e387d82de4b745a787aefd4e).
+ERROR      - 2025-08-04 18:59:47,700 - tree            : Ignoring exception in command 'leaderboard'
+Traceback (most recent call last):
+  File "/home/hamish/projects/GC-stock-bot/venv/lib/python3.12/site-packages/discord/app_commands/commands.py", line 857, in _do_call
+    return await self._callback(self.binding, interaction, **params)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hamish/projects/GC-stock-bot/cogs/leaderboard.py", line 34, in leaderboard
+    embed.add_field(
+TypeError: Embed.add_field() missing 1 required keyword-only argument: 'value'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/hamish/projects/GC-stock-bot/venv/lib/python3.12/site-packages/discord/app_commands/tree.py", line 1310, in _call
+    await command._invoke_with_namespace(interaction, namespace)
+  File "/home/hamish/projects/GC-stock-bot/venv/lib/python3.12/site-packages/discord/app_commands/commands.py", line 883, in _invoke_with_namespace
+    return await self._do_call(interaction, transformed_values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hamish/projects/GC-stock-bot/venv/lib/python3.12/site-packages/discord/app_commands/commands.py", line 872, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.app_commands.errors.CommandInvokeError: Command 'leaderboard' raised an exception: TypeError: Embed.add_field() missing 1 required keyword-only argument: 'value'

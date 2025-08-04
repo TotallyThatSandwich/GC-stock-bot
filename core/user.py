@@ -55,7 +55,7 @@ async def sync_users(bot):
                 discord_id=member.id,
                 defaults={
                     "name": member.name,
-                    "balance": 1000,
+                    "balance": 0,
                     "market_value": 0
                 }
             )
@@ -75,10 +75,17 @@ async def sync_users(bot):
                 counter += 1
 
             # Create the stock
-            await Stock.create(
+            stock = await Stock.create(
                 owner=user,
                 ticker=ticker,
                 price=10.0,
-                total_shares=500,
-                market_shares_available=500
+                total_shares=250,
+                market_shares_available=0
             )
+
+            await Holding.create(
+                user=user,
+                stock=stock,
+                quantity=500
+            )
+

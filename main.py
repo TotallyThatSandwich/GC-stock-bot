@@ -3,7 +3,7 @@ import discord
 import os
 import settings
 from core import start_scheduler, sync_users
-from db import init_db
+from db import init_db, StockPriceHistory, Trade, Holding, Stock, User 
 import asyncio
 
 
@@ -74,6 +74,24 @@ async def unload(ctx, cog: str):
     else:
         await ctx.send(f"no cog exists named {cog}")
 
+
+@bot.command()
+@commands.check(is_admin)
+async def reset_bot(ctx):
+    await ctx.send("Wiping database...")
+
+    await StockPriceHistory.all().delete()
+    await Trade.all().delete()
+    await Holding.all().delete()
+    await Stock.all().delete()
+    await User.all().delete()
+
+    await ctx.send("Database cleared. Re-initialising bot...")
+    await sync_users(bot)
+
+    await ctx.send("Bot Reset")
+
+
+
 bot.run(settings.TOKEN, root_logger=True)
 
-asyncio.run(main())
