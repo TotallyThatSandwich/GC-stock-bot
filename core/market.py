@@ -20,6 +20,7 @@ async def get_or_create_holding(user: User, stock: Stock) -> Holding:
 async def adjust_stock_price(stock: Stock, direction: str, volume: int):
     adjustment_factor = 0.01
 
+
     if direction == "buy":
         stock.price *= (1 + adjustment_factor * volume)
     elif direction == "sell":
@@ -34,20 +35,21 @@ async def adjust_stock_price(stock: Stock, direction: str, volume: int):
 async def buy_stock(buyer: User, ticker: str, quantity: int) -> str:
     try:
         stock = await Stock.get(ticker=ticker)
+        price = stock.price
     except DoesNotExist:
         return f"Stock '{ticker}' does not exist."
     
-     if amount <= 0:
-            return "You must buy at least one share."
+    if quantity <= 0:
+        return "You must buy at least one share."
 
     if stock.market_shares_available < quantity:
         return f"Only {stock.market_shares_available} shares available in the market."
     
     fee = 0.25
-    total_price = (stock.price * quantity) * (1 + fee)
+    total_price = (price * quantity) * (1 + fee)
     if buyer.balance < total_price:
         return f"Insufficient funds. You need ${total_price:.2f}."
-
+    
     # Execute trade
     buyer.balance -= total_price
     stock.market_shares_available -= quantity
@@ -59,18 +61,20 @@ async def buy_stock(buyer: User, ticker: str, quantity: int) -> str:
     await holding.save()
 
     await adjust_stock_price(stock, direction="buy", volume=quantity)
-    await Trade.create(user=buyer, stock=stock, quantity=quantity, price=stock.price, action="BUY")
+    await Trade.create(user=buyer, stock=stock, quantity=quantity, price=price, action="BUY")
 
-    return f"Bought {quantity} shares of {stock.ticker} for ${stock.price * quantity:.2f}/${stock.price:.2f} each."
+    return f"Bought {quantity} shares of {stock.ticker} for ${total_price:.2f}/${total_price/quantity:.2f} each."
 
 # Sell stock
 async def sell_stock(seller: User, ticker: str, quantity: int) -> str:
+
     try:
         stock = await Stock.get(ticker=ticker)
+        price = stock.price
     except DoesNotExist:
         return f"Stock '{ticker}' does not exist."
 
-    if amount <= 0:
+    if quantity <= 0:
         return "You must sell at least one share."
 
     try:
@@ -81,7 +85,7 @@ async def sell_stock(seller: User, ticker: str, quantity: int) -> str:
     if holding.quantity < quantity:
         return f"You only own {holding.quantity} shares of {stock.ticker}."
 
-    total_value = stock.price * quantity
+    total_value = price * quantity
     seller.balance += total_value
     holding.quantity -= quantity
     stock.market_shares_available += quantity
@@ -91,9 +95,9 @@ async def sell_stock(seller: User, ticker: str, quantity: int) -> str:
     await stock.save()
 
     await adjust_stock_price(stock, direction="sell", volume=quantity)
-    await Trade.create(user=seller, stock=stock, quantity=quantity, price=stock.price, action="SELL")
+    await Trade.create(user=seller, stock=stock, quantity=quantity, price=price, action="SELL")
 
-    return f"Sold {quantity} shares of {stock.ticker} for ${stock.price * quantity:.2f}/${stock.price:.2f} each."
+    return f"Sold {quantity} shares of {stock.ticker} for ${price * quantity:.2f}/${price:.2f} each."
 
 
 async def simulate_market_fluctuations():
