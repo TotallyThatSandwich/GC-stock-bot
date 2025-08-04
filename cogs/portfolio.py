@@ -12,19 +12,23 @@ class Trading(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="portfolio", description="WIP")
-    async def portfolio(self, ctx):
+    @app_commands.describe(member="The member whose portfolio you want to view (optional)")
+    async def portfolio(self, ctx, member: discord.Member = None):
+
+        target = member or ctx.user
+
         try:
-            user = await get_or_create_user(ctx.user.id)
+            user = await get_or_create_user(target.id)
             await user.fetch_related("holdings__stock")
         except DoesNotExist:
             await ctx.response.send_message("User not found.")
             return
 
         if not user.holdings:
-            await ctx.response.send_message("You don't own any stocks.")
+            await ctx.response.send_message(f"{target.name} dosn't own any stocks.")
             return
 
-        embed = discord.Embed(title=f"{ctx.user.name}'s Portfolio", color=discord.Color.gold())
+        embed = discord.Embed(title=f"{target.name}'s Portfolio", color=discord.Color.gold())
         total_value = Decimal("0")
 
         for holding in user.holdings:
