@@ -11,7 +11,7 @@ class Trading(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="portfolio", description="WIP")
+    @app_commands.command(name="portfolio", description="Show users portfolio")
     @app_commands.describe(member="The member whose portfolio you want to view (optional)")
     async def portfolio(self, ctx, member: discord.Member = None):
 

@@ -30,12 +30,14 @@ async def on_ready():
                 await bot.load_extension(f"cogs.{cog_file[:-3]}")
 
     try:
-        synced = await bot.tree.sync()
+        guild = discord.Object(id=1082280059018162186)
+        synced = await bot.tree.sync(guild=guild)
         logger.info(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(e)
 
     logger.info(f'Logged in as {bot.user} (ID: {bot.user.id})')
+    await bot.tree.sync()
     await start_scheduler()
 
 @bot.command()

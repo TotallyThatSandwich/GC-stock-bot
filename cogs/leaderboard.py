@@ -32,8 +32,8 @@ class Leaderboard(commands.Cog):
         embed = discord.Embed(title="📈 Top Players", color=discord.Color.green())
         for i, (name, net_worth) in enumerate(leaderboard[:10], start=1):
             embed.add_field(
-                name=f"{i}. {name}",
-                value=f"💰 ${net_worth:.2f}",
+                name=f"{i}. {name} - ${net_worth:.2f}",
+                value="",
                 inline=False
             )
 
